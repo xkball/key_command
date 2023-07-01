@@ -6,12 +6,14 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Mod.EventBusSubscriber
 public class KeyManager {
     public static List<KeyBind> keys = new ArrayList<>();
     

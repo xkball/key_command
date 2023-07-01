@@ -17,7 +17,7 @@ public class ConfigReader {
             JsonElement jsonExisted = new JsonParser().parse(new String(Files.readAllBytes(file.toPath())));
             if(jsonExisted.isJsonNull()) throw new IllegalArgumentException();
             
-            JsonArray keyArray = jsonExisted.getAsJsonArray();
+            JsonArray keyArray = jsonExisted.getAsJsonObject().getAsJsonArray("key_array");
             
             for (JsonElement element : keyArray) {
                 JsonObject obj = element.getAsJsonObject();

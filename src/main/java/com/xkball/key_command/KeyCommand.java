@@ -1,5 +1,8 @@
 package com.xkball.key_command;
 
+import com.google.gson.JsonElement;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonWriter;
 import com.xkball.key_command.client.KeyManager;
 import com.xkball.key_command.config.ConfigReader;
 import net.minecraftforge.fml.common.Loader;
@@ -11,11 +14,12 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
 @Mod(modid = KeyCommand.MODID, name = KeyCommand.NAME, version = KeyCommand.VERSION)
 public class KeyCommand
 {
-    public static final String MODID = "key_command";
+    public static final String MODID = "assets/key_command";
     public static final String NAME = "Key Command";
     public static final String VERSION = "1.0";
     
@@ -57,5 +61,18 @@ public class KeyCommand
     public void init(FMLInitializationEvent event)
     {
         KeyManager.init();
+    }
+    
+    public static String jsonToString(JsonElement element){
+        try {
+            StringWriter stringWriter = new StringWriter();
+            JsonWriter jsonWriter = new JsonWriter(stringWriter);
+            jsonWriter.setLenient(true);
+            jsonWriter.setIndent("  ");
+            Streams.write(element, jsonWriter);
+            return stringWriter.toString();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
     }
 }

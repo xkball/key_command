@@ -6,6 +6,7 @@ import com.xkball.key_command.network.GCPacket;
 import io.netty.buffer.ByteBuf;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -58,7 +59,13 @@ public class KeyEventToServerPacket implements GCPacket {
                         public MinecraftServer getServer() {
                             return server;
                         }
+                        
+                        @Override
+                        public Entity getCommandSenderEntity() {
+                            return player;
+                        }
                     },command);
+                    return;
                 }
             }
         }
