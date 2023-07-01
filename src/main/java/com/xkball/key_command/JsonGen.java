@@ -15,5 +15,7 @@ public class JsonGen {
         out.add("key_array",array);
         
         System.out.println(KeyCommand.jsonToString(out));
+        System.out.println(0xC7);
+        System.out.println(0x31);
     }
 }

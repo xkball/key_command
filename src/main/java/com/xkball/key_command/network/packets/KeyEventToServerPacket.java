@@ -8,6 +8,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -47,7 +48,7 @@ public class KeyEventToServerPacket implements GCPacket {
                         
                         @Override
                         public boolean canUseCommand(int permLevel, String commandName) {
-                            return true;
+                            return player instanceof EntityPlayerMP || player.canUseCommand(permLevel, commandName);
                         }
                         
                         @Override
