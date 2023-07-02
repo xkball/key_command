@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xkball.key_command.KeyCommand;
 import com.xkball.key_command.client.KeyBind;
 import com.xkball.key_command.client.KeyManager;
 
@@ -26,9 +27,15 @@ public class ConfigReader {
                 if (obj.has("default_key")) {
                     keyDefault = obj.get("default_key").getAsInt();
                 }
-                KeyManager.keys.add(new KeyBind(command, keyDefault));
+                boolean fakePlayer = true;
+                if(obj.has("fake_player")){
+                    fakePlayer = obj.get("fake_player").getAsBoolean();
+                }
+                KeyManager.keys.add(new KeyBind(command, keyDefault,fakePlayer));
                 
             }
+            KeyCommand.logger.info("read config successfully.");
+            
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }

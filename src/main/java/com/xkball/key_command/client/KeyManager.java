@@ -1,5 +1,6 @@
 package com.xkball.key_command.client;
 
+import com.xkball.key_command.KeyCommand;
 import com.xkball.key_command.network.GCNetworkManager;
 import com.xkball.key_command.network.packets.KeyEventToServerPacket;
 import net.minecraft.client.settings.KeyBinding;
@@ -31,7 +32,7 @@ public class KeyManager {
                             "key.category.key_command");
                     key.setReal_key(real_key);
                     ClientRegistry.registerKeyBinding(real_key);
-                    
+                    KeyCommand.logger.info("Client init");
                 }
                 
             }
@@ -45,6 +46,7 @@ public class KeyManager {
             if(key.getReal_key().isPressed()){
                 //发包
                 GCNetworkManager.INSTANCE.sendPacketToServer(new KeyEventToServerPacket(key.command));
+                KeyCommand.logger.info("client key typed: "+ key.real_key.getKeyCode());
                 return;
             }
         }

@@ -8,7 +8,9 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -20,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.io.IOException;
 
 //borrow from https://harbinger.covertdragon.team/chapter-07/forge-extension/fml-event-channel.html
+//@Mod.EventBusSubscriber
 public enum GCNetworkManager {
     
     INSTANCE;
@@ -31,17 +34,38 @@ public enum GCNetworkManager {
     
     GCNetworkManager() {
         channel.register(this);
+        KeyCommand.logger.debug("KC NetworkManager setup");
+    }
+    
+    public static void init(){
+    
     }
     
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onClientPacketEvent(FMLNetworkEvent.ClientCustomPacketEvent event) {
-        decodeDataClient(event.getPacket().payload(), Minecraft.getMinecraft().player);
+        IThreadListener threadListener = FMLCommonHandler.instance().getWorldThread(event.getHandler());
+        if(threadListener.isCallingFromMinecraftThread()){
+            decodeDataClient(event.getPacket().payload(),Minecraft.getMinecraft().player);
+        }
+        else {
+            threadListener.addScheduledTask(() ->
+                    decodeDataClient(event.getPacket().payload(), Minecraft.getMinecraft().player));
+        }
+        //decodeDataClient(event.getPacket().payload(), Minecraft.getMinecraft().player);
     }
     
     @SubscribeEvent
     public void onServerPacketEvent(FMLNetworkEvent.ServerCustomPacketEvent event) {
-        decodeDataServer(event.getPacket().payload(), ((NetHandlerPlayServer)event.getHandler()).player);
+        KeyCommand.logger.debug("server receive packet");
+        IThreadListener threadListener = FMLCommonHandler.instance().getWorldThread(event.getHandler());
+        if(threadListener.isCallingFromMinecraftThread()){
+            decodeDataServer(event.getPacket().payload(), ((NetHandlerPlayServer)event.getHandler()).player);
+        }
+        else {
+            threadListener.addScheduledTask(() ->
+                    decodeDataServer(event.getPacket().payload(), ((NetHandlerPlayServer)event.getHandler()).player));
+        }
     }
     
     @SideOnly(Side.CLIENT)
@@ -66,10 +90,6 @@ public enum GCNetworkManager {
     
     //向某个维度的某个点发包
     public void sendPacketAroundPos(GCPacket pkt, int dim, BlockPos pos) {
-        // TargetPoint的构造器为：
-        // 维度id x坐标 y坐标 z坐标 覆盖范围
-        // 其中，覆盖范围指接受此更新数据包的坐标的范围
-        // 之所以要强调最后一个参数是double是因为Kotlin并不会帮你把2隐式转换为kotlin.Double....
         channel.sendToAllAround(createFMLProxyPacket(pkt), new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), 2.0D));
     }
     

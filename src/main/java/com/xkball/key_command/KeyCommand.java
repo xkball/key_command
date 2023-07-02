@@ -5,6 +5,7 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import com.xkball.key_command.client.KeyManager;
 import com.xkball.key_command.config.ConfigReader;
+import com.xkball.key_command.network.GCNetworkManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -61,6 +62,7 @@ public class KeyCommand
     public void init(FMLInitializationEvent event)
     {
         KeyManager.init();
+        GCNetworkManager.init();
     }
     
     public static String jsonToString(JsonElement element){

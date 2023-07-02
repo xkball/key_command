@@ -1,5 +1,6 @@
 package com.xkball.key_command.network.packets;
 
+import com.xkball.key_command.KeyCommand;
 import com.xkball.key_command.client.KeyBind;
 import com.xkball.key_command.client.KeyManager;
 import com.xkball.key_command.network.GCPacket;
@@ -10,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -40,32 +42,45 @@ public class KeyEventToServerPacket implements GCPacket {
             if(key.getCommand().equals(command)){
                 MinecraftServer server = player.getServer();
                 if(server != null){
-                    server.commandManager.executeCommand(new ICommandSender() {
-                        @Override
-                        public String getName() {
-                            return player.getDisplayNameString();
+                    if(key.useFakePlayer()){
+                        int i = server.commandManager.executeCommand(new ICommandSender() {
+                            @Override
+                            public String getName() {
+                                return player.getName();
+                            }
+                            
+                            @Override
+                            public boolean canUseCommand(int permLevel, String commandName) {
+                                return player instanceof EntityPlayerMP || player.canUseCommand(permLevel, commandName);
+                            }
+                            
+                            @Override
+                            public World getEntityWorld() {
+                                return player.getEntityWorld();
+                            }
+                            
+                            @Override
+                            public MinecraftServer getServer() {
+                                return server;
+                            }
+                            
+                            @Override
+                            public Entity getCommandSenderEntity() {
+                                return player;
+                            }
+                            
+                            @Override
+                            public void sendMessage(ITextComponent component) {
+                                player.sendMessage(component);
+                            }
+                        },command);
+                        if(i>0) {
+                            KeyCommand.logger.info("Server run command: /"+ command);
+                            return;
                         }
-                        
-                        @Override
-                        public boolean canUseCommand(int permLevel, String commandName) {
-                            return player instanceof EntityPlayerMP || player.canUseCommand(permLevel, commandName);
-                        }
-                        
-                        @Override
-                        public World getEntityWorld() {
-                            return player.getEntityWorld();
-                        }
-                        
-                        @Override
-                        public MinecraftServer getServer() {
-                            return server;
-                        }
-                        
-                        @Override
-                        public Entity getCommandSenderEntity() {
-                            return player;
-                        }
-                    },command);
+                    }
+                    server.commandManager.executeCommand(player,command);
+                    KeyCommand.logger.info("Server run command: /"+ command);
                     return;
                 }
             }

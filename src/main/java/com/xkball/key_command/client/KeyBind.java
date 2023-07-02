@@ -8,13 +8,15 @@ public class KeyBind {
     
     final String command;
     final int keyDefault;
+    final boolean fakePlayer;
     
     @SideOnly(Side.CLIENT)
     KeyBinding real_key;
     
-    public KeyBind(String command, int keyDefault) {
+    public KeyBind(String command, int keyDefault,boolean fakePlayer) {
         this.command = command;
         this.keyDefault = keyDefault;
+        this.fakePlayer = fakePlayer;
     }
     
     @SideOnly(Side.CLIENT)
@@ -30,4 +32,9 @@ public class KeyBind {
     public String getCommand() {
         return command;
     }
+    
+    public boolean useFakePlayer() {
+        return fakePlayer;
+    }
+    
 }
