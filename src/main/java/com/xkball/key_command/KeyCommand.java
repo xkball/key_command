@@ -19,7 +19,7 @@ import java.io.StringWriter;
 @Mod(modid = KeyCommand.MODID, name = KeyCommand.NAME, version = KeyCommand.VERSION)
 public class KeyCommand
 {
-    public static final String MODID = "assets/key_command";
+    public static final String MODID = "key_command";
     public static final String NAME = "Key Command";
     public static final String VERSION = "1.0";
     
