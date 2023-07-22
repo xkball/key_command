@@ -15,7 +15,6 @@
 在第一次启动游戏时(或者你可以自己创建), 会在 `/.minecraft/config/key_command` 文件夹下生成 `config.json` 文件, 该文件的内容需要你手动输入.
 
 ```json
-// 示例文件.
 {
   "key_array" : [
     {
@@ -58,7 +57,6 @@ When the player is in single player game,the commands can be executed or not are
 When you first launch the game (or you can create it by yourself), a `config.json` file will be generated in the `/.minecraft/config/key_command` folder, you need to enter the contents of this file manually.
 
 ```json
-// The Example File.
 {
   "key_array" : [
     {
